@@ -1,6 +1,10 @@
 import HookCard from '@/components/HookCard';
 import Footer from '@/components/Footer';
 import HeroTerminal from '@/components/heros/HeroTerminal';
+import HeroNeon from '@/components/heros/HeroNeon';
+import HeroGlass from '@/components/heros/HeroGlass';
+import SectionTestimonials from '@/components/sections/SectionTestimonials';
+import SectionHowItWorks from '@/components/sections/SectionHowItWorks';
 import { Hook } from '@/types/hook';
 import hooksData from '@/data/hooks.json';
 
@@ -11,8 +15,40 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      {/* Hero */}
+      {/* Hero - Original Terminal Style */}
       <HeroTerminal />
+
+      {/* Hero Variant 1 - Neon Cyberpunk Style */}
+      <div className="relative">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/60 text-white text-xs font-mono px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm">
+          ✦ Variant: HeroNeon — Cyberpunk Style
+        </div>
+        <HeroNeon />
+      </div>
+
+      {/* Hero Variant 2 - Glassmorphism Style */}
+      <div className="relative">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/60 text-white text-xs font-mono px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm">
+          ✦ Variant: HeroGlass — Glassmorphism Style
+        </div>
+        <HeroGlass />
+      </div>
+
+      {/* Section: How It Works */}
+      <div className="relative">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-[#d97757]/90 text-white text-xs font-mono px-4 py-1.5 rounded-full">
+          ✦ Section: SectionHowItWorks
+        </div>
+        <SectionHowItWorks />
+      </div>
+
+      {/* Section: Testimonials */}
+      <div className="relative">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-[#6a9bcc]/90 text-white text-xs font-mono px-4 py-1.5 rounded-full">
+          ✦ Section: SectionTestimonials
+        </div>
+        <SectionTestimonials />
+      </div>
 
       {/* Header */}
       <header className="border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-sm sticky top-0 z-50">
