@@ -1,0 +1,35 @@
+# Node / Next.js 建置產物
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+
+# 環境變數
+.env
+.env.local
+.env.*.local
+
+# 測試覆蓋率
+coverage/
+.nyc_output/
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+*.stackdump
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Claude Code session state
+.claude/session-state.md
