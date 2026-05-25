@@ -1,0 +1,40 @@
+flowchart TD
+  CC(["Claude Code 核心引擎"])
+
+  subgraph L1["Layer 1 格式層 難度01"]
+    OS["Ch08 Output Styles\n.claude/output-styles/\nyaml / retro / mermaid"]
+  end
+
+  subgraph L2["Layer 2 入門層 難度02"]
+    GS["Ch01 入門基礎\nCLI + CLAUDE.md"]
+  end
+
+  subgraph L3["Layer 3 指令層 難度03-04"]
+    CMD["Ch03 Custom Commands\n/slash $arguments"]
+    DEMO["Ch02 HookHub 示範\nNext.js Agents MVP"]
+  end
+
+  subgraph L4["Layer 4 整合層 難度05"]
+    MCP["Ch04 MCP 整合\n--mcp-config / Context 優化"]
+  end
+
+  subgraph L5["Layer 5 代理層 難度06-07"]
+    CA["Ch07 Custom Agents\nCodeComedy Carl\npersona + tools"]
+    HK["Ch03 Hooks 系統\nPreToolUse PostToolUse\nPython 事件驅動"]
+  end
+
+  subgraph L6["Layer 6 技能層 難度08"]
+    SK["Ch09 Skills 系統\nShell + claude-p\ngit-pushing 遞迴代理"]
+  end
+
+  subgraph L7["Layer 7 全端層 難度09 最複雜"]
+    APP["Ch10 全端 HookHub\nNext.js TypeScript\nzealous to vigilant\nSpec + Memory 驅動"]
+  end
+
+  L1 --> CC
+  L2 --> CC
+  L3 --> CC
+  L4 --> CC
+  L5 --> CC
+  L6 --> CC
+  CC --> L7

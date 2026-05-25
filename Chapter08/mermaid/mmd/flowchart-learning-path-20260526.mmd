@@ -1,0 +1,24 @@
+flowchart TD
+  S([Agentic Coding with Claude Code])
+  S --> D01 --> D02 --> D03 --> D04 --> D05 --> D06 --> D07 --> D08 --> E
+
+  D01["01 Ch08 Output Styles\n.claude/output-styles/ 設定檔\nyaml-concise / retro-ascii / Mermaid PNG\n最簡單：只需建立 .md 設定檔"]
+
+  D02["02 Ch01 入門基礎\nClaude Code CLI 安裝與操作\nCLAUDE.md 專案導引"]
+
+  D03["03 Ch03 Custom Commands\n.claude/commands/ 自訂斜線指令\n$arguments 動態變數替換"]
+
+  D04["04 Ch02 HookHub 初版示範\nNext.js Agents 概念展示\nSub-agent 基本展示"]
+
+  D05["05 Ch04 MCP 整合優化\n--mcp-config 最小載入\nToken 成本控制 / Context 最佳化"]
+
+  D06["06 Ch07 Custom Agents\n.claude/agents/ 個性化子代理\nCodeComedy Carl / Mermaid Generator\npersona + tools + model 設定"]
+
+  D07["07 Ch03 Hooks 系統\n.claude/settings.json 事件驅動\nPreToolUse PostToolUse Notification Stop\nPython 腳本自動化"]
+
+  D08["08 Ch09 Skills 系統\n.claude/skills/ Shell + claude -p 串接\ngit-pushing / smart_commit.sh\nClaude 呼叫 Claude 遞迴代理"]
+
+  D09["09 Ch10 全端 HookHub 最複雜\nNext.js TypeScript + Tailwind CSS\nzealous-jemison 初版 to vigilant-feistel 動畫版\nmemory/ Spec 規格書驅動 + 跨 Session 迭代"]
+
+  D08 --> D09
+  D09 --> E([掌握 Agentic Coding！])
