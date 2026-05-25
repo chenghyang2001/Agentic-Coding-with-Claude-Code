@@ -32,4 +32,4 @@ build/
 .pytest_cache/
 
 # Claude Code session state
-.claude/session-state.md
+**/.claude/session-state.md
