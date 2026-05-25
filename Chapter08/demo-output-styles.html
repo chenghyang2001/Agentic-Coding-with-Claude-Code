@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Output Styles - Retro Terminal Demo</title>
+    <style>
+        body {
+            font-family: 'Courier New', Monaco, Consolas, monospace;
+            background-color: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+        .ascii-banner {
+            text-align: center;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+            margin-bottom: 30px;
+            white-space: pre;
+        }
+        .ascii-divider {
+            color: #00ffff;
+            text-align: center;
+            margin: 20px 0;
+            white-space: pre;
+        }
+        .section {
+            border: 2px solid #00ff00;
+            padding: 15px 20px;
+            margin: 20px 0;
+            background-color: #0d1f0d;
+            box-shadow: 0 0 8px #00ff0044;
+        }
+        .section-header {
+            color: #ff6600;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            text-shadow: 0 0 6px #ff6600;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #00ff00;
+            padding: 12px;
+            margin: 10px 0;
+            color: #ffffff;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .highlight { color: #ffff00; font-weight: bold; }
+        .cyan     { color: #00ffff; }
+        .orange   { color: #ff6600; }
+        .green    { color: #00ff00; }
+        .white    { color: #ffffff; }
+        ul { list-style: none; padding-left: 0; }
+        ul li::before { content: ">> "; color: #00ffff; }
+        .footer {
+            text-align: center;
+            color: #555555;
+            margin-top: 40px;
+            border-top: 2px solid #333333;
+            padding-top: 20px;
+            white-space: pre;
+        }
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ASCII Banner -->
+    <div class="ascii-banner">
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║    ██████╗ ██╗   ██╗████████╗██████╗ ██╗   ██╗████████╗    ║
+║   ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██║   ██║╚══██╔══╝    ║
+║   ██║   ██║██║   ██║   ██║   ██████╔╝██║   ██║   ██║       ║
+║   ██║   ██║██║   ██║   ██║   ██╔═══╝ ██║   ██║   ██║       ║
+║   ╚██████╔╝╚██████╔╝   ██║   ██║     ╚██████╔╝   ██║       ║
+║    ╚═════╝  ╚═════╝    ╚═╝   ╚═╝      ╚═════╝    ╚═╝       ║
+║                                                              ║
+║          S T Y L E S   D E M O   v1.0.0                     ║
+╚══════════════════════════════════════════════════════════════╝
+    </div>
+
+    <div class="ascii-divider">═══════════════[ SYSTEM READY ]═══════════════</div>
+
+    <!-- Section 1 -->
+    <div class="section">
+        <div class="section-header">>> WHAT IS OUTPUT STYLES? &lt;&lt; 什麼是輸出樣式</div>
+        <p>Output Styles 是放在 <span class="highlight">.claude/output-styles/</span> 的 <span class="cyan">.md 格式模板</span>，</p>
+        <p>定義 Claude Code 回答問題時的<span class="orange">視覺風格與格式邏輯</span>。</p>
+        <br>
+        <ul>
+            <li>同一個問題 → 不同 Style → 完全不同的視覺呈現</li>
+            <li>不需要改 Prompt，不需要改模型</li>
+            <li>就像給 Claude 穿不同的衣服</li>
+        </ul>
+    </div>
+
+    <div class="ascii-divider">───────────────[ STYLES LIST ]───────────────</div>
+
+    <!-- Section 2 -->
+    <div class="section">
+        <div class="section-header">>> AVAILABLE STYLES &lt;&lt; 可用樣式清單</div>
+        <div class="code-block">
+┌─────────────────────┬──────────────────────────────────────┐
+│  Style Name         │  Effect                              │
+├─────────────────────┼──────────────────────────────────────┤
+│  yaml-concise       │  極簡 YAML 鍵值對，零廢話            │
+│  retro-ascii-blog   │  復古終端機 HTML 頁面（你現在看的）  │
+│  (自定義)           │  任何你想要的格式都能定義            │
+└─────────────────────┴──────────────────────────────────────┘
+        </div>
+    </div>
+
+    <div class="ascii-divider">───────────────[ HOW TO USE ]────────────────</div>
+
+    <!-- Section 3 -->
+    <div class="section">
+        <div class="section-header">>> USAGE GUIDE &lt;&lt; 使用方式</div>
+        <div class="code-block">
+STEP 1: 建立 output style 檔案
+  $ mkdir -p .claude/output-styles
+  $ vim .claude/output-styles/my-style.md
+
+STEP 2: 在 Claude Code 中切換
+  > /output-style yaml-concise
+
+STEP 3: 之後所有回答自動套用格式
+  [USER]  什麼是 Fibonacci 數列？
+  [STYLE] yaml-concise
+  [OUT]   topic: fibonacci
+          formula: F(n) = F(n-1) + F(n-2)
+          base_cases: [F(0)=0, F(1)=1]
+        </div>
+    </div>
+
+    <div class="ascii-divider">───────────────[ COMPARISON ]────────────────</div>
+
+    <!-- Section 4 -->
+    <div class="section">
+        <div class="section-header">>> STYLE COMPARISON &lt;&lt; 風格對比</div>
+        <p class="cyan">同樣的問題：「解釋什麼是 API？」</p>
+        <br>
+        <p class="orange">[ yaml-concise 模式 ]</p>
+        <div class="code-block">
+api:
+  definition: 應用程式介面
+  purpose: 讓不同系統溝通
+  example: fetch('https://api.example.com/data')
+        </div>
+        <br>
+        <p class="orange">[ retro-ascii-blog 模式（就是你現在看的這種）]</p>
+        <div class="code-block">
+╔═══════════════════╗
+║   什麼是 API？    ║
+╚═══════════════════╝
+
+>> 定義：應用程式介面，讓不同系統能互相溝通
+>> 用途：前端呼叫後端、後端呼叫資料庫
+>> 範例：fetch() 就是在呼叫 API
+        </div>
+    </div>
+
+    <div class="ascii-divider">═══════════════[ END OF DEMO ]═══════════════</div>
+
+    <!-- Footer -->
+    <div class="footer">
++----------------------------------------------------------+
+|  Generated by: retro-ascii-blog Output Style            |
+|  Chapter 08 — Claude Code Output Styles Demo            |
+|  2026.05.26                                             |
++----------------------------------------------------------+
+|  C:\Chapter08> _<span class="blink">█</span>                                             |
++----------------------------------------------------------+
+    </div>
+
+</div>
+</body>
+</html>

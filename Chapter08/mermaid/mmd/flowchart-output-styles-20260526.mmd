@@ -1,0 +1,35 @@
+flowchart TD
+    A([開始使用 Claude Code]) --> B[提出問題或需求]
+    B --> C{選擇 Output Style}
+
+    C -->|yaml-concise| D[極簡 YAML 模式]
+    C -->|retro-ascii-blog| E[復古終端機模式]
+    C -->|mermaid-flowchart| F[流程圖模式]
+    C -->|mermaid-mindmap| G[心智圖模式]
+    C -->|預設無樣式| H[一般 Markdown 回應]
+
+    D --> D1[輸出鍵值對結構\n無廢話純文字]
+    E --> E1[生成完整 HTML\n黑底綠字 ASCII 藝術]
+    F --> F1[生成 .mmd 流程圖\n渲染為 PNG]
+    G --> G1[生成 .mmd 心智圖\n渲染為 PNG]
+    H --> H1[標準 Markdown\n文字回應]
+
+    D1 --> Z
+    E1 --> E2[自動開啟瀏覽器]
+    E2 --> Z
+    F1 --> F2[npx mmdc 渲染]
+    F2 --> Z
+    G1 --> G2[npx mmdc 渲染]
+    G2 --> Z
+    H1 --> Z
+
+    Z([結果呈現給使用者])
+
+    style A fill:#2d6a2d,color:#fff
+    style Z fill:#2d6a2d,color:#fff
+    style C fill:#8b6914,color:#fff
+    style D fill:#1a4a7a,color:#fff
+    style E fill:#1a4a7a,color:#fff
+    style F fill:#1a4a7a,color:#fff
+    style G fill:#1a4a7a,color:#fff
+    style H fill:#4a4a4a,color:#fff
