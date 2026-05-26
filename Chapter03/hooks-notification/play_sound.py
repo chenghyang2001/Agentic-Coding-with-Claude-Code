@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 from pathlib import Path
 
 def main():
@@ -7,7 +8,7 @@ def main():
     pygame.mixer.init()
 
     # 使用絕對路徑找 wav，避免 hook 執行時 CWD 不同導致找不到
-    sound_file = str(Path(__file__).parent / "ding.wav")
+    sound_file = str(Path(__file__).parent / (sys.argv[1] if len(sys.argv) > 1 else "ding.wav"))
     if not os.path.exists(sound_file):
         print(f"Error: {sound_file} not found in current directory")
         return
