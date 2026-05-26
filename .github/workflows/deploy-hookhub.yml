@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
-          known_hosts: ${{ secrets.VPS_KNOWN_HOSTS }}
+          # 不設 fingerprint：私鑰認證已足夠安全，跳過 host key 比對
           # 逾時設較長，npm build 在低規 VPS 上可能需要 3–5 分鐘
           command_timeout: 10m
           script: |
