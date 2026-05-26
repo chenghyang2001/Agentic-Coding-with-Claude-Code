@@ -23,7 +23,7 @@ This tutorial demonstrates a "Stop" hook that plays a sound whenever Claude Code
         "hooks": [
           {
             "type": "command",
-            "command": "uv run /Users/edenmarco/GithubProjects/claude-code-crash-course/play_sound.py"
+            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py"
           }
         ]
       }

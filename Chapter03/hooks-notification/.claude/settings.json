@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"C:\\Users\\user\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py"
+            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py"
           }
         ]
       }
