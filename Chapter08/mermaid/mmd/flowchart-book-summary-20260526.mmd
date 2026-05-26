@@ -1,0 +1,48 @@
+flowchart TD
+    A([Agentic Coding with Claude Code<br/>Eden Marco · Packt]) --> B[核心哲學<br/>Context Engineering]
+
+    B --> C[MCP 情境工程<br/>Ch1 & Ch4]
+    B --> D[代理協作系統<br/>Ch2 & Ch7]
+    B --> E[自動化機制<br/>Ch3 & Ch9]
+    B --> F[Output Styles<br/>Ch8]
+    B --> G[跨 Session 記憶<br/>Ch10]
+
+    C --> C1[Verbose MCP<br/>4,254 tokens 浪費]
+    C --> C2[Concise MCP<br/>省 70-80% tokens]
+    C --> C3[FastMCP 框架<br/>Context7 整合]
+    C1 -. 優化 .-> C2
+
+    D --> D1[infinite 指令<br/>無限代理迴圈]
+    D --> D2[Sub-agent 定義<br/>.claude/agents/]
+    D1 --> D1a[規格分析]
+    D1 --> D1b[目錄偵察]
+    D1 --> D1c[平行派遣]
+    D2 --> D2a[code-comedy-carl<br/>唯讀工具 · 幽默審查]
+    D2 --> D2b[mermaid-generator<br/>只回傳圖表]
+
+    E --> E1[Slash Commands<br/>顯式呼叫]
+    E --> E2[Hooks 事件<br/>6 種觸發類型]
+    E --> E3[Skills 工作流<br/>SKILL.MD + 腳本]
+    E3 --> E3a[smart_commit.sh<br/>海盜風格 + claude -p]
+
+    F --> F1[yaml-concise<br/>工程師掃描]
+    F --> F2[retro-ascii-blog<br/>黑底綠字 HTML]
+    F --> F3[mermaid-flowchart<br/>邏輯圖表]
+    F --> F4[mermaid-mindmap<br/>知識地圖]
+    F --> F5[statusline.py<br/>狀態列動態顯示]
+
+    G --> G1[階層式 CLAUDE.md]
+    G --> G2[memory/ 目錄<br/>截圖 + 設計決策]
+    G --> G3[Playwright MCP<br/>UI 截圖驗證]
+
+    style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
+    style B fill:#16213e,color:#00ff41,stroke:#00ff41
+    style C fill:#0f3460,color:#fff,stroke:#4a9eff
+    style D fill:#0f3460,color:#fff,stroke:#ff6b6b
+    style E fill:#0f3460,color:#fff,stroke:#ffd93d
+    style F fill:#0f3460,color:#fff,stroke:#6bcb77
+    style G fill:#0f3460,color:#fff,stroke:#c77dff
+    style F1 fill:#1a3a1a,color:#00ff41
+    style F2 fill:#1a3a1a,color:#00ff41
+    style F3 fill:#1a3a1a,color:#00ff41
+    style F4 fill:#1a3a1a,color:#00ff41

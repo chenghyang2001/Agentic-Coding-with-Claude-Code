@@ -1,0 +1,69 @@
+mindmap
+  root((Agentic Coding\nwith Claude Code))
+    MCP 情境工程
+      Token 最佳化
+        Verbose：4254 tokens
+        Concise：省 70-80%
+      FastMCP 框架
+        tool / resource / prompt
+      Context7 MCP
+        即時技術文件
+      配置策略
+        多個 .mcp.json
+        按任務切換
+    代理協作系統
+      無限代理迴圈
+        /infinite 指令
+        5 階段執行流程
+        平行派遣 sub-agent
+        LLM 機率性 = 多樣性
+      Sub-agent 設計
+        .claude/agents/ 目錄
+        YAML Frontmatter
+        工具白名單原則
+        路由靠 description
+    自動化機制
+      Slash Commands
+        .claude/commands/
+        顯式 /指令名 呼叫
+      Hooks 事件
+        Stop
+        PreToolUse
+        PostToolUse
+        UserPromptSubmit
+      Skills 工作流
+        SKILL.MD 規格書
+        smart_commit.sh
+        claude -p 動態呼叫
+    Output Styles
+      yaml-concise
+        鍵值對結構
+        工程師掃描用
+      retro-ascii-blog
+        黑底綠字 HTML
+        ASCII 藝術邊框
+      mermaid-flowchart
+        邏輯決策圖
+        .mmd → PNG
+      mermaid-mindmap
+        概念層次結構
+        三層深度
+      Status Line
+        statusline.py
+        讀 transcript
+        ANSI 彩色輸出
+    長期記憶系統
+      階層式 CLAUDE.md
+        專案根層
+        前端記憶層
+        規格記憶層
+      memory/ 目錄
+        截圖比對
+        設計決策記錄
+      Playwright MCP
+        UI 自動化測試
+    核心哲學
+      Context Engineering
+      從使用者到設計師
+      LLM 機率性是資源
+      HookHub 貫穿專案
