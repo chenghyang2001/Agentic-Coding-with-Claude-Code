@@ -1,0 +1,81 @@
+# HookHub VPS 自動部署 Workflow
+# 觸發條件：push 到 main，且改動 Chapter02/hookhub/ 底下的任何檔案
+# 透過 appleboy/ssh-action 連線 VPS 執行完整部署流程
+
+name: Deploy HookHub to VPS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Chapter02/hookhub/**'
+      - '.github/workflows/deploy-hookhub.yml'
+
+jobs:
+  deploy:
+    name: SSH Deploy to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 部署 HookHub 到 VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          fingerprint: ${{ secrets.VPS_FINGERPRINT }}
+          # 逾時設較長，npm build 在低規 VPS 上可能需要 3–5 分鐘
+          command_timeout: 10m
+          script: |
+            set -euo pipefail
+
+            # ── Step 1：首次 clone，後續 pull ─────────────────────────────
+            # 用 .git 目錄判斷是否已 clone，避免重複初始化
+            REPO_DIR="$HOME/Agentic-Coding-with-Claude-Code"
+            if [ -d "$REPO_DIR/.git" ]; then
+              echo "📦 Repo 已存在，執行 git pull..."
+              cd "$REPO_DIR" && git pull --ff-only origin main
+            else
+              echo "🆕 首次部署，執行 git clone..."
+              git clone https://github.com/chenghyang2001/Agentic-Coding-with-Claude-Code.git "$REPO_DIR"
+            fi
+
+            # ── Step 2：確保 PM2 已安裝（idempotent）─────────────────────
+            # command -v 若找不到 pm2 才安裝，避免重複 npm install -g
+            command -v pm2 || npm install -g pm2
+
+            # ── Step 3：安裝依賴並建置 Next.js ─────────────────────────────
+            # npm ci 保證 lock file 一致性；build 產生 .next 目錄
+            cd "$REPO_DIR/Chapter02/hookhub/hookhub"
+            mkdir -p logs
+            npm ci
+            npm run build
+            [ -d ".next" ] || { echo "❌ BUILD FAILED: .next directory missing"; exit 1; }
+
+            # ── Step 4：PM2 啟動或重啟（idempotent）─────────────────────
+            # 若 PM2 清單中已有 hookhub 就 reload（zero-downtime）
+            # 首次啟動後執行 pm2 save 保存程序清單，重開機後自動恢復
+            if pm2 list | grep -q "hookhub"; then
+              echo "♻️  HookHub 已在 PM2 中，執行 reload..."
+              pm2 reload ecosystem.config.js --env production
+              pm2 save --force
+            else
+              echo "🚀 首次啟動 HookHub..."
+              pm2 start ecosystem.config.js --env production
+              pm2 save --force
+            fi
+
+            # ── Step 5：Health check（含 retry）─────────────────────────
+            # 等 5 秒讓 Next.js 完成啟動後再檢查
+            # --retry-connrefused 讓 curl 在連線被拒時也重試（而非立即失敗）
+            echo "⏳ 等待服務啟動..."
+            sleep 5
+            curl -f http://localhost:3001 \
+              --retry 5 \
+              --retry-delay 3 \
+              --retry-connrefused \
+              --silent \
+              --show-error
+            echo "✅ HookHub deployed successfully"
