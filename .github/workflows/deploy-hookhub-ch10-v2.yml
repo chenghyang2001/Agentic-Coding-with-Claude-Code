@@ -1,0 +1,120 @@
+# HookHub Ch10-v2 VPS 自動部署 Workflow
+# 觸發條件：push 到 main，且改動 Chapter10/v2-vigilant-feistel/hookhub/ 底下的任何檔案
+# 透過 appleboy/ssh-action 連線 VPS 執行完整部署流程
+# PM2 app name 為 hookhub-v2（PORT 3003），與 Chapter02 hookhub（PORT 3001）、Ch10-v1（PORT 3002）隔離
+
+name: Deploy HookHub Ch10-v2 to VPS
+
+on:
+  push:
+    branches:
+      - main
+    # 只在 Chapter10 v2 hookhub 或本 workflow 有變動時觸發，避免其他章節 push 觸發不必要的部署
+    paths:
+      - 'Chapter10/v2-vigilant-feistel/hookhub/**'
+      - '.github/workflows/deploy-hookhub-ch10-v2.yml'
+
+# 同一時間只允許一個 deploy workflow 對 VPS 操作，防止並發競爭造成 PM2 狀態混亂
+# 與 v1（deploy-hookhub-ch10.yml）共用同一 group，三個 workflow 序列化執行
+# cancel-in-progress: false 讓排隊的 job 等待（而非取消），確保每次 push 都能部署
+concurrency:
+  group: vps-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: SSH Deploy Ch10-v2 to VPS
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 部署 HookHub Ch10-v2 到 VPS
+        uses: appleboy/ssh-action@v1.0.3
+        # 固定版本 v1.0.3 而非 @master，防止上游破壞性更新造成部署靜默失敗
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          # 不設 fingerprint：私鑰認證已足夠安全，跳過 host key 比對
+          # 逾時設 15 分鐘：npm ci + build 在低規 VPS 實測可達 8-10 分鐘，10m 邊際不足
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+
+            # ── Step 1：首次 clone，後續 pull ─────────────────────────────
+            # 用 .git 目錄判斷是否已 clone，避免重複初始化
+            # --ff-only 強制快轉合併，遇到 diverged 就報錯而非靜默覆蓋（保護 VPS 本地修改）
+            REPO_DIR="$HOME/Agentic-Coding-with-Claude-Code"
+            if [ -d "$REPO_DIR/.git" ]; then
+              echo "📦 Repo 已存在，執行 git pull..."
+              cd "$REPO_DIR" && git pull --ff-only origin main
+            else
+              echo "🆕 首次部署，執行 git clone..."
+              git clone https://github.com/chenghyang2001/Agentic-Coding-with-Claude-Code.git "$REPO_DIR"
+            fi
+
+            # ── Step 2：確保 PM2 已安裝（idempotent）─────────────────────
+            # 設定 npm 全域安裝到 user home（避免 EACCES: /usr/lib/node_modules 需要 root）
+            # npm config set prefix 讓後續 npm install -g 寫入 ~/.npm-global
+            export NPM_GLOBAL="$HOME/.npm-global"
+            mkdir -p "$NPM_GLOBAL"
+            npm config set prefix "$NPM_GLOBAL"
+            export PATH="$NPM_GLOBAL/bin:$PATH"
+            # pm2 已存在就跳過，避免每次部署重新安裝耗時
+            command -v pm2 || npm install -g pm2
+
+            # ── Step 3：安裝依賴並建置 Next.js ─────────────────────────────
+            # 進入 Chapter10 v2 的 hookhub（獨立的 Next.js 專案）
+            # npm ci 保證 lock file 一致性；build 產生 .next 目錄
+            # mkdir -p logs 確保 PM2 log 目錄存在，否則 PM2 啟動時會因 log 路徑不存在而報錯
+            cd "$REPO_DIR/Chapter10/v2-vigilant-feistel/hookhub"
+            mkdir -p logs
+            npm ci
+            npm run build
+            # build 後驗證 .next 目錄確實存在，避免無聲建置失敗造成服務跑舊版
+            [ -d ".next" ] || { echo "❌ BUILD FAILED: .next directory missing"; exit 1; }
+
+            # ── Step 4：PM2 啟動或重啟（idempotent）─────────────────────
+            # 用 hookhub-v2 這個 PM2 app name（與 v1 hookhub-ch10 及 Chapter02 hookhub 隔離）
+            # pm2 reload 為 zero-downtime reload（new process 起來後才停舊 process）
+            # pm2 save --force 把當前程序清單持久化，VPS 重開機後 pm2 startup 可自動恢復
+            # pm2 describe 精確查詢 app 是否存在（exit 1 = 不存在），取代 grep 字串比對
+            # 舊作法 `pm2 list | grep -q "hookhub-v2"` 會誤命中名稱含此子字串的其他 app
+            if pm2 describe hookhub-v2 > /dev/null 2>&1; then
+              echo "♻️  hookhub-v2 已在 PM2 中，執行 reload..."
+              pm2 reload ecosystem.config.js --env production
+              pm2 save --force
+            else
+              echo "🚀 首次啟動 hookhub-v2..."
+              pm2 start ecosystem.config.js --env production
+              pm2 save --force
+            fi
+
+            # ── Step 5：Health check（含 retry）─────────────────────────
+            # 等 5 秒讓 Next.js 完成啟動後再檢查（避免 cold start 期間誤判失敗）
+            # --retry-connrefused 讓 curl 在連線被拒時也重試（而非立即失敗）
+            # 針對 PORT 3003（Chapter10 v2 專屬 port）
+            echo "⏳ 等待服務啟動..."
+            sleep 5
+            # 明確驗證 HTTP 200（curl -f 對 3xx 視為成功，無法保證服務真的回應正常頁面）
+            HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" \
+              --retry 5 \
+              --retry-delay 3 \
+              --retry-connrefused \
+              http://localhost:3003)
+            [ "$HTTP_CODE" = "200" ] || { echo "❌ Health check failed: HTTP $HTTP_CODE"; exit 1; }
+            echo "✅ HookHub v2 deployed successfully（HTTP $HTTP_CODE）"
+
+            # ── 提示：若為首次部署，需手動更新 nginx 設定 ──
+            # port 3003 預設無 nginx 入口，服務雖已啟動但外部無法訪問
+            # 因為 ecosystem.config.js 設定 HOSTNAME=127.0.0.1，所以只有 loopback 能訪問
+            # 建議在 nginx conf 加入以下設定（以 /v2/ 路徑對外）：
+            # location /v2/ {
+            #   proxy_pass http://127.0.0.1:3003/;
+            #   proxy_http_version 1.1;
+            #   proxy_set_header Host $host;
+            #   proxy_set_header X-Real-IP $remote_addr;
+            # }
+            # 加入後執行：sudo nginx -t && sudo systemctl reload nginx
+            echo "ℹ️  注意：port 3003 預設無 nginx 入口。若需外部訪問，請依照 README 更新 nginx 設定。"
