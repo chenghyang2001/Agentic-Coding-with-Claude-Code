@@ -103,7 +103,7 @@ jobs:
               --retry 5 \
               --retry-delay 3 \
               --retry-connrefused \
-              http://localhost:3003)
+              http://localhost:3003/v2/)
             [ "$HTTP_CODE" = "200" ] || { echo "❌ Health check failed: HTTP $HTTP_CODE"; exit 1; }
             echo "✅ HookHub v2 deployed successfully（HTTP $HTTP_CODE）"
 
