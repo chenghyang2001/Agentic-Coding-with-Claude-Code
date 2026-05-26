@@ -44,11 +44,12 @@ jobs:
 
             # ── Step 1：首次 clone，後續 pull ─────────────────────────────
             # 用 .git 目錄判斷是否已 clone，避免重複初始化
-            # --ff-only 強制快轉合併，遇到 diverged 就報錯而非靜默覆蓋（保護 VPS 本地修改）
+            # fetch + reset --hard：VPS 以 repo 為準，忽略 VPS 本地未追蹤檔
+            # 舊的 --ff-only 遇到 VPS 有手動建立的未追蹤檔時會 abort（踩坑記錄：commit 0b0e365）
             REPO_DIR="$HOME/Agentic-Coding-with-Claude-Code"
             if [ -d "$REPO_DIR/.git" ]; then
-              echo "📦 Repo 已存在，執行 git pull..."
-              cd "$REPO_DIR" && git pull --ff-only origin main
+              echo "📦 Repo 已存在，執行 git fetch + reset..."
+              cd "$REPO_DIR" && git fetch origin main && git reset --hard FETCH_HEAD
             else
               echo "🆕 首次部署，執行 git clone..."
               git clone https://github.com/chenghyang2001/Agentic-Coding-with-Claude-Code.git "$REPO_DIR"
