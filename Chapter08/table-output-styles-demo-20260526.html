@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Chapter 08 — Output Styles 完整清單</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
+      background: #f5f7fa;
+      padding: 40px;
+      margin: 0;
+      color: #1a1a2e;
+    }
+    h1 {
+      font-size: 1.6em;
+      color: #1a1a2e;
+      border-bottom: 3px solid #4a9eff;
+      padding-bottom: 8px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 1.1em;
+      color: #4a9eff;
+      margin: 30px 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead tr { background: #1a1a2e; color: #ffffff; }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9em;
+      letter-spacing: 0.03em;
+    }
+    thead th:first-child {
+      width: 48px;
+      text-align: center;
+      background: #4a9eff;
+    }
+    tbody tr:nth-child(even) { background: #f0f4ff; }
+    tbody tr:hover { background: #e6eeff; }
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #e8ecf0;
+      font-size: 0.88em;
+      line-height: 1.5;
+    }
+    tbody td:first-child {
+      text-align: center;
+      font-weight: 700;
+      color: #4a9eff;
+      font-size: 0.85em;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.78em;
+      font-weight: 600;
+    }
+    .badge-new  { background: #d4edda; color: #155724; }
+    .badge-orig { background: #cce5ff; color: #004085; }
+    .footer {
+      font-size: 0.75em;
+      color: #999;
+      text-align: right;
+      margin-top: 20px;
+    }
+    code {
+      background: #eef2ff;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chapter 08 — Output Styles 完整清單</h1>
+
+  <h2>Output Styles 索引</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Style 名稱</th>
+        <th>輸出格式</th>
+        <th>適用場景</th>
+        <th>最終產物</th>
+        <th>狀態</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>yaml-concise</code></td>
+        <td>YAML 鍵值對</td>
+        <td>工程師快速掃描、程式讀取</td>
+        <td>Chat 文字輸出</td>
+        <td><span class="badge badge-orig">原版</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><code>retro-ascii-blog</code></td>
+        <td>黑底綠字 HTML</td>
+        <td>視覺展示、復古終端機風格</td>
+        <td>.html 檔案 + 瀏覽器開啟</td>
+        <td><span class="badge badge-orig">原版</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><code>mermaid-flowchart</code></td>
+        <td>Mermaid .mmd</td>
+        <td>流程圖、決策邏輯視覺化</td>
+        <td>.mmd → .png（npx mmdc）</td>
+        <td><span class="badge badge-orig">原版</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><code>mermaid-mindmap</code></td>
+        <td>Mermaid mindmap</td>
+        <td>概念層次、知識地圖</td>
+        <td>.mmd → .png（npx mmdc）</td>
+        <td><span class="badge badge-orig">原版</span></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><code>numbered-table</code></td>
+        <td>Markdown 表格 + # 索引</td>
+        <td>結構化資料、快速比對</td>
+        <td>Chat 文字輸出</td>
+        <td><span class="badge badge-new">本 Session 新增</span></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><code>numbered-table-png</code></td>
+        <td>樣式化 HTML 表格</td>
+        <td>簡報素材、分享用圖片</td>
+        <td>.html → .png（Puppeteer）</td>
+        <td><span class="badge badge-new">本 Session 新增</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Workflow 比較</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>步驟</th>
+        <th>numbered-table</th>
+        <th>numbered-table-png</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>分析內容</td>
+        <td>決定欄位與分組</td>
+        <td>決定欄位與分組</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>產出格式</td>
+        <td>Markdown 表格</td>
+        <td>完整 HTML + CSS</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>儲存檔案</td>
+        <td>— （直接顯示）</td>
+        <td>Write → .html 檔</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>轉換工具</td>
+        <td>—</td>
+        <td>Puppeteer MCP navigate</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>最終產物</td>
+        <td>Chat 內嵌表格</td>
+        <td>Screenshot → .png 檔</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">Generated with Output Style: numbered-table-png ✦ 2026-05-26</div>
+</body>
+</html>
