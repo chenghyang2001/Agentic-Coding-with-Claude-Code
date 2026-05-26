@@ -43,7 +43,13 @@ jobs:
             fi
 
             # ── Step 2：確保 PM2 已安裝（idempotent）─────────────────────
-            # command -v 若找不到 pm2 才安裝，避免重複 npm install -g
+            # 設定 npm 全域安裝到 user home（避免 EACCES: /usr/lib/node_modules 需要 root）
+            # npm config set prefix 讓後續 npm install -g 寫入 ~/.npm-global
+            export NPM_GLOBAL="$HOME/.npm-global"
+            mkdir -p "$NPM_GLOBAL"
+            npm config set prefix "$NPM_GLOBAL"
+            export PATH="$NPM_GLOBAL/bin:$PATH"
+            # pm2 已存在就跳過，避免每次部署重新安裝
             command -v pm2 || npm install -g pm2
 
             # ── Step 3：安裝依賴並建置 Next.js ─────────────────────────────
