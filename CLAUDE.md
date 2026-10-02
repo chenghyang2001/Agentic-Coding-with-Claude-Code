@@ -58,14 +58,16 @@ Hook 綁定在 `Chapter03/hooks-notification/.claude/settings.json`（6 事件 �
 
 - nginx `proxy_pass` 尾斜線 = 路徑改寫；無尾斜線 = 原封轉發。搭配 Next.js `basePath` 時必須用無尾斜線。
 - Next.js 會把 `/v2/`（尾斜線）308 重定向到 `/v2`，health check 必須打不含尾斜線的路徑。
-- `next.config.ts` 皆含 `outputFileTracingRoot: __dirname`——因為 `%USERPROFILE%\package-lock.json` 存在會讓 Next.js 誤判 workspace root，影響 Tailwind PostCSS 掃描。
-- PM2 `ecosystem.config.js` 必須設 `HOSTNAME=127.0.0.1`（loopback only，由 nginx 對外代理）。
+- 只有 Ch02 的 `next.config.ts` 設了 `outputFileTracingRoot: path.resolve(__dirname)`——因為 `%USERPROFILE%\package-lock.json` 存在會讓 Next.js 誤判 workspace root，Tailwind 樣式全空白。Ch10 v1/v2 **沒有**這行；本機 build 樣式消失時先補它。
+- PM2 `ecosystem.config.js`：Ch10 v1/v2 設 `HOSTNAME=127.0.0.1`（loopback only，由 nginx 對外代理）且 PORT 用字串型別；**Ch02 兩者都沒有**（綁 0.0.0.0）。新增版本請照 Ch10 寫法。
 
 ### CI/CD（.github/workflows/，三條部署線）
 
 - `deploy-hookhub.yml` / `deploy-hookhub-ch10.yml` / `deploy-hookhub-ch10-v2.yml`，push main 觸發，`appleboy/ssh-action@v1.0.3`
-- 三條線共用 `concurrency: group: vps-deploy` 防止並發部署互撞
-- VPS 端同步策略：`git fetch origin main && git reset --hard FETCH_HEAD`（VPS 是乾淨鏡像；**不要**用 `git pull --ff-only`，有未追蹤檔會 abort）
+- 各線用 `paths:` 過濾，只在改到自己的 app 目錄或該 workflow 檔時觸發
+- 三條線共用 `concurrency: group: vps-deploy` 防止並發部署互撞。⚠️ 同 group 最多「1 執行中 + 1 排隊」，第三個進來會**取消**排隊中的那個——一次 push 觸發多條線時，等 group 內**沒有排隊中的 run** 後，再用 `gh workflow run <檔名>` 手動補跑（三條皆有 `workflow_dispatch`；過早補跑會反過來取消別條）
+- PM2 存在判斷用 `pm2 describe <app>`，**不要**用 `pm2 list | grep hookhub`（子字串會誤命中 `hookhub-ch10` / `hookhub-v2`）
+- VPS 端同步策略：`git fetch origin main` 後另起一行 `git reset --hard FETCH_HEAD`（VPS 是乾淨鏡像；**不要**用 `git pull --ff-only`，遇本地修改會 abort）。三條線共用同一個 VPS clone，任一線部署都會重置全部原始碼——**禁止在 VPS 上手改被追蹤的檔案**，會被下次部署靜默清掉。兩行不可用 `&&` 串接——串列中間失敗不觸發 `set -e`，fetch 失敗會建出舊版還亮綠燈
 - `appleboy/ssh-action` 無 `known_hosts` 參數；不設 fingerprint，靠私鑰認證
 - VPS 上的 nginx conf 手動改動不在本 repo 版控中（重建時參考 `summary-02-sessions/2026-05-26/session4-summary.md`）
 
@@ -91,6 +93,8 @@ Hook 綁定在 `Chapter03/hooks-notification/.claude/settings.json`（6 事件 �
 
 - **查中文檔名**必加 `git -c core.quotepath=false`，否則非 ASCII 路徑輸出為八進位跳脫，`grep 中文` 會空手而回
 - 改檔名用 `git mv` 保留 rename 歷史
+- `Chapter03/custom commands/` 資料夾名含空格，shell 指令務必加引號
+- `.planning/codebase/`：`/gsd-map-codebase` 產出的專案地圖（架構、慣例、風險等 7 份）；`doc/handoff-*.md` 為跨 PC 交接文件
 - `bash.exe.stackdump` 等當機殘留檔不入版控（見全域 junk-files 規則）
 - Session 紀錄寫入 `summary-02-sessions/YYYY-MM-DD/sessionN-summary.md`；專案樹文件在 `doc/project-tree*.md`（由 `/project-tree` skill 生成）
 - Commit message 繁體中文「動詞 + 簡短說明」，commit 後直接 push

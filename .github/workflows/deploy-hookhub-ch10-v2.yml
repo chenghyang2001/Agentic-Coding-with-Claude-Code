@@ -13,10 +13,14 @@ on:
     paths:
       - 'Chapter10/v2-vigilant-feistel/hookhub/**'
       - '.github/workflows/deploy-hookhub-ch10-v2.yml'
+  # 手動補跑入口：排隊中的部署被 concurrency 取消時，用 gh workflow run deploy-hookhub-ch10-v2.yml 補跑
+  workflow_dispatch:
 
 # 同一時間只允許一個 deploy workflow 對 VPS 操作，防止並發競爭造成 PM2 狀態混亂
-# 與 v1（deploy-hookhub-ch10.yml）共用同一 group，三個 workflow 序列化執行
-# cancel-in-progress: false 讓排隊的 job 等待（而非取消），確保每次 push 都能部署
+# 與 deploy-hookhub.yml、deploy-hookhub-ch10.yml 共用同一 group
+# 同一 group 最多 1 個執行中 + 1 個排隊中；第三個進來時，原本排隊的會被取消（cancelled）
+# cancel-in-progress: false 只保證「執行中的不被中斷」，不保證每次 push 都部署
+# 被取消時用 workflow_dispatch 手動補跑（gh workflow run deploy-hookhub-ch10-v2.yml）
 concurrency:
   group: vps-deploy
   cancel-in-progress: false
@@ -25,6 +29,7 @@ jobs:
   deploy:
     name: SSH Deploy Ch10-v2 to VPS
     runs-on: ubuntu-latest
+    # 避免 ssh-action 卡住時佔用 vps-deploy group 長達預設 360 分鐘
     timeout-minutes: 20
 
     steps:
@@ -44,12 +49,15 @@ jobs:
 
             # ── Step 1：首次 clone，後續 pull ─────────────────────────────
             # 用 .git 目錄判斷是否已 clone，避免重複初始化
-            # fetch + reset --hard：VPS 以 repo 為準，忽略 VPS 本地未追蹤檔
-            # 舊的 --ff-only 遇到 VPS 有手動建立的未追蹤檔時會 abort（踩坑記錄：commit 0b0e365）
+            # fetch + reset --hard：VPS 以 repo 為準，丟棄 VPS 本地對追蹤檔的修改
+            # 舊的 --ff-only 在本地有修改的追蹤檔，或未追蹤檔會被新 commit 的同名檔覆蓋時會 abort
             REPO_DIR="$HOME/Agentic-Coding-with-Claude-Code"
             if [ -d "$REPO_DIR/.git" ]; then
               echo "📦 Repo 已存在，執行 git fetch + reset..."
-              cd "$REPO_DIR" && git fetch origin main && git reset --hard FETCH_HEAD
+              # 拆成獨立三行：&& 串列中非最後一個指令失敗時不觸發 set -e，fetch 失敗會用舊 commit 建置且 CI 綠燈
+              cd "$REPO_DIR"
+              git fetch origin main
+              git reset --hard FETCH_HEAD
             else
               echo "🆕 首次部署，執行 git clone..."
               git clone https://github.com/chenghyang2001/Agentic-Coding-with-Claude-Code.git "$REPO_DIR"
