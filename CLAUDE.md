@@ -89,6 +89,24 @@ Hook 綁定在 `Chapter03/hooks-notification/.claude/settings.json`（6 事件 �
 - 檔名／資料夾命名：原名 + `-中文`（如 `prd-writer-中文.md`、`specs-中文/`）。舊 `-zh` 後綴已全 repo 清零，不要再引入
 - 上游英文原檔保留不動，翻譯是並存的新檔（`translate-zh` skill 的行為）
 
+## 互動式範例復習：每站自動語音播報（2026-10-03 起）
+
+進行「逐站互動復習範例程式」（見 `doc/handoff-互動復習-*.md`）時，**每一站講解完、問下一步之前**，自動把該站重點做成語音視窗播放（使用者已長期授權，不需逐次詢問）：
+
+1. 用 Write 把該站摘要寫成純文字講稿（UTF-8、去 markdown 符號、約 1-2 分鐘可念完、不可為空）到 **session scratchpad** 的 `_answer.txt`——不放進 repo
+2. 關舊開新（exe 只在啟動時讀一次講稿，一定要先關再開）：
+
+   ```bash
+   EXE="$(cygpath -w "$USERPROFILE/workspace/kindle-28-claude-code-advanced/skills/dist/say_ui.exe")"
+   MSYS_NO_PATHCONV=1 cmd.exe /c "taskkill /IM say_ui.exe /F"
+   MSYS_NO_PATHCONV=1 cmd.exe /c start "" "$EXE" --file "<scratchpad 的 _answer.txt Windows 路徑>" --autoplay
+   ```
+
+- `say_ui.exe`：kindle-28 專案自製的 tkinter 播放器（顯示講稿 + edge-tts `zh-TW-HsiaoChenNeural` 朗讀，含暫停/變速/音量），規則原型見該 repo `CLAUDE.md`
+- 換機器若沒有該 exe：`gh repo clone chenghyang2001/kindle-28-claude-code-advanced "$USERPROFILE/workspace/kindle-28-claude-code-advanced"`（exe 已進版控）；仍不可用時退回 `tts` skill（只有聲音、無講稿視窗）
+- Git Bash 呼叫 `taskkill` / `tasklist` 必加 `MSYS_NO_PATHCONV=1`，否則 `/IM`、`/FI` 被當路徑轉換而靜默失效
+- onefile exe 冷啟動 + 語音合成需十幾秒，且會出現 2 個 `say_ui.exe` 程序（正常）；首次執行可能被 SmartScreen 攔，按「仍要執行」一次即可
+
 ## 開發注意事項
 
 - **查中文檔名**必加 `git -c core.quotepath=false`，否則非 ASCII 路徑輸出為八進位跳脫，`grep 中文` 會空手而回
