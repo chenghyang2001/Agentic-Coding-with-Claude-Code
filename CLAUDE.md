@@ -12,6 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Chapter05/06 上游無程式碼資料夾，本 repo 也沒有。
 
+**Repo 名稱**：`chenghyang2001/kindle-116-Agentic-Coding-with-Claude-Code`（2026-10-03 由 `Agentic-Coding-with-Claude-Code` 改名，GitHub 舊網址自動轉址）；本機資料夾 `%USERPROFILE%\workspace\kindle-116-Agentic-Coding-with-Claude-Code`。VPS 上的 clone 目錄與部署 workflow 的 `REPO_DIR` 仍沿用舊名 `~/Agentic-Coding-with-Claude-Code`（刻意未改，靠轉址運作）。
+
 ## 常用指令
 
 ### HookHub（Next.js 15，三份同構副本）

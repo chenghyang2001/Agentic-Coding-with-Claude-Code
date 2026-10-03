@@ -5,7 +5,7 @@ chcp 65001 > nul
 :: 依照 Claude Code 一次完整互動的 Hook 觸發順序，
 :: 依序播放英文版與中文版音效，驗證所有事件皆可正常播放。
 
-set HOOK_DIR=%USERPROFILE%\workspace\Agentic-Coding-with-Claude-Code\Chapter03\hooks-notification
+set HOOK_DIR=%~dp0hooks-notification
 cd /d "%HOOK_DIR%"
 
 echo ====================================================
