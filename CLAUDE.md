@@ -42,7 +42,7 @@ uv sync                              # 首次執行，安裝 pygame
 uv run play_sound.py <檔名>.wav      # 播放單一音效
 ```
 
-Hook 綁定在 `Chapter03/hooks-notification/.claude/settings.json`（6 事件 × 各 2 WAV，英文+中文音）。`ch03_demo_all_hooks_order.bat` 需在原生 CMD 雙擊執行——Git Bash 下 `cmd //c` 會因 MSYS2 路徑轉換導致中文亂碼。
+Hook 綁定在 `Chapter03/hooks-notification/.claude/settings.json`（6 事件 × 各 2 WAV，英文+中文音）。Claude Code 在 Windows 以 **Git Bash** 執行 hook——指令內不可用 `%USERPROFILE%` 等 CMD 語法（會靜默失敗，只記在 debug log），路徑一律用 `$CLAUDE_PROJECT_DIR`（2026-10-03 修正，commit `029f531`）。`ch03_demo_all_hooks_order.bat` 需在原生 CMD 雙擊執行——Git Bash 下 `cmd //c` 會因 MSYS2 路徑轉換導致中文亂碼。
 
 ## 高層架構
 
