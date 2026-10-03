@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py PreToolUse.wav && uv run play_sound.py 工具使用前.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py PreToolUse.wav && uv run play_sound.py 工具使用前.wav"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py PostToolUse.wav && uv run play_sound.py 工具使用後.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py PostToolUse.wav && uv run play_sound.py 工具使用後.wav"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py UserPromptSubmit.wav && uv run play_sound.py 提交Prompt時.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py UserPromptSubmit.wav && uv run play_sound.py 提交Prompt時.wav"
           }
         ]
       }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py Stop.wav && uv run play_sound.py 回應結束時.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py Stop.wav && uv run play_sound.py 回應結束時.wav"
           }
         ]
       }
@@ -50,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py Notification.wav && uv run play_sound.py 系統通知時.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py Notification.wav && uv run play_sound.py 系統通知時.wav"
           }
         ]
       }
@@ -61,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"%USERPROFILE%\\workspace\\Agentic-Coding-with-Claude-Code\\Chapter03\\hooks-notification\" && uv run play_sound.py PreCompact.wav && uv run play_sound.py 壓縮Context前.wav"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" &&uv run play_sound.py PreCompact.wav && uv run play_sound.py 壓縮Context前.wav"
           }
         ]
       }
